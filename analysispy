@@ -1,0 +1,196 @@
+import snap as snap
+import pickle
+
+
+data = []
+with open('eig_centrality.dat','r') as f:
+    for line in f:
+        data.append(eval(line))
+
+data2 = []
+with open('transition_vector_tree.dat','r') as f:
+    for line in f:
+        data2.append(eval(line))
+
+data3 = []
+with open('transition_vector_tree_highprecision.dat','r') as f:
+    for line in f:
+        data3.append(eval(line))
+
+
+
+data.index(max(data))
+
+
+#different folder
+import cPickle as pickle
+sage: configs = pickle.load(open('all_configs.pickle','r'))
+
+sorteddata = sorted(data)
+
+sorteddata2 = sorted(data2)
+
+sorteddata3 = sorted(data3)
+
+for ii in range(1,100):
+	print (sorteddata[-ii] - sorteddata2[-ii])/sorteddata[-ii]
+
+top100 = []
+secondtop100 = []
+
+for ii in range(1,100):
+	top100.append(data.index(sorteddata[-ii]))
+	secondtop100.append(data2.index(sorteddata2[-ii]))
+
+secondtop = []
+for ii in range(1,200):
+	secondtop.append(data2.index(sorteddata2[-ii]))
+
+secondtop = []
+for ii in range(1,300):
+	secondtop.append(data2.index(sorteddata2[-ii]))
+
+thirdtop100 = []
+for ii in range(1,100):
+	thirdtop100.append(data3.index(sorteddata3[-ii]))
+
+configs3 = ['1cone','3cone']
+for i in range(2,20):
+	k = 2*i + 1
+	print k
+	configs3 = configs3 + flatten(pickle.load(open('/Users/cody/Desktop/configs/c' + str(k) + '.pickle','r')))
+
+testconfigs = pickle.load(open('/Users/cody/Dropbox/networks/correctconfigs/c7.pickle','r'))
+
+topten = [31326970,32435354,32343519,32088194,33731176,32524318,30934797,32485995,30530822]
+
+fivecones = [5575186299632656094906718321370116263018528,696898287454081973777454105827575888611332,38761184091394047916118018,1237977818217243232127944768,11150372599265311570805638068187137948319746]
+
+towrite = open('/Users/cody/Desktop/nodestix.txt','w')
+for i in topten:
+	towrite.write('\\begin{tikzpicture}[scale=3]' +'\n')
+	towrite.write(str(conestotikz( inttoconfig(configs3[i]))) + '\n')
+	towrite.write('\end{tikzpicture}' + '\n')
+towrite.close()
+
+top = [31326970, 32435354, 32343519, 32088194, 33731176, 32524318, 30934797, 32485995, 30530822, 34351816, 31413254, 36079277, 31327055, 36189393, 34262274, 33369483, 34301455, 30524946, 32415205, 33993118, 32038777, 32416294, 34259401, 34339814, 30883236, 35227687, 36849025, 31423237, 34515863, 31324794, 33731136, 31613002, 30936815, 35130434, 31960949, 31447224, 32341119, 31447226, 34365899, 33994221, 33731129, 32344087, 32087132, 32488687, 33365273, 34389351, 34280125, 32459993, 33642810, 33731164, 32137492, 33831111, 34128504, 34369156, 31267320, 32517598, 35831898, 33991533, 31415923, 32094173, 31961523, 32416275, 31385936, 32140293, 34184742, 34129248, 32434726, 30936521, 32089308, 36833467, 32423530, 32168001, 37864233, 37767981, 34064811, 33366413, 32624569, 31425900, 31311303, 32206048, 37950371, 34189900, 33987553, 34367714, 30860990, 32342373, 31262227, 36082150, 32367312, 32540437, 31416164, 31323676, 34270168, 34090320, 37862333, 34010544, 37445587, 32497488, 32343298]
+
+top20 = [31326970,32435354,32343519,32088194,33731176,32524318,30934797,32485995,30530822,34351816,31413254,36079277,31327055,36189393,34262274,33369483,34301455,30524946,32415205]
+
+conjclasses = []
+for ii in top20:
+	i = configs3[ii]
+	unique = True
+	for j in conjclasses:
+		for sym in genSymConfigs(inttoconfig(j[0])):
+			if configsEqual(inttoconfig(i),sym):
+				j.append(i)
+				unique = False
+				print "non-unique"
+	if unique:
+		conjclasses.append([i])
+
+conjclasses = []
+for ii in precisetop:
+	i = configs3[ii]
+	unique = True
+	for j in conjclasses:
+		for sym in genSymConfigs(inttoconfig(j[0])):
+			if configsEqual(inttoconfig(i),sym):
+				j.append(i)
+				unique = False
+				print "non-unique"
+	if unique:
+		conjclasses.append([i])
+
+conjclasses = []
+for ii in top20:
+	i = configs3[ii]
+	print len(genSymConfigs(inttoconfig(i)))
+
+	
+
+conjclasses = []
+for ii in range(2,50):
+	i = configs3[ii]
+	unique = True
+	for j in conjclasses:
+		for sym in genSymConfigs(inttoconfig(j[0])):
+			if configsEqual(inttoconfig(i),sym):
+				j.append(i)
+				unique = False
+				print "non-unique"
+	if unique:
+		conjclasses.append([i])
+
+conjclasses = []
+for i in somecones:
+	unique = True
+	for j in conjclasses:
+		for sym in genSymConfigs(inttoconfig(j[0])):
+			if configsEqual(inttoconfig(i),sym):
+				j.append(i)
+				unique = False
+	if unique:
+		conjclasses.append([i])
+
+
+conjclasses = []
+for i in fivecones:
+	unique = True
+	for j in conjclasses:
+		if inttoconfig(i) in genSymConfigs(inttoconfig(j[0])):
+			j.append(i)
+			unique = False
+	if unique:
+		conjclasses.append([i])
+
+conjclasses = []
+for i in testmany:
+	unique = True
+	for j in conjclasses:
+		vertsets = [getVerts(k).sort() for k in genSymConfigs(inttoconfig(j[0]))]
+		if getVerts(inttoconfig(i)).sort() in vertsets:
+			j.append(i)
+			unique = False
+	if unique:
+		conjclasses.append([i])
+			
+testmany = [5575186299632656094906718321370116263018528,696898287454081973777454105827575888611332,38761184091394047916118018,1237977818217243232127944768,11150372599265311570805638068187137948319746,1393796574908164024926160666991418950027266,12554203470773361527671578846435139948391140699240784728068,12554203470773539933633167091400465722413801883134710517764,100433627766188319469065336731204069189801049345677573783584,10043362,766186892221372630771323010903831599850543338491936,12855504354071922210607781325856603398546310965099903445925920,1285550435407192221060778,325816038579339007624254207966609412,6129982163469130960015387685634606916170934036765868288,11847270886719393544545313242151756675219460,842498333348457493583349796655663091208184124953331216861532028992,200867255532376638938130673462407480648398364607169817542658,2993155353950587463935228515411642098734677603911688,25108406941547079867266334182801008816080059102536591740930,1276701223376774322882351168,421249166674228746791683261107280994587460672250662437976186880032]
+
+if 'G' not in vars():
+    	print 'Loading Graph'
+	FIn = snap.TFIn("network_snap.graph")
+	G = snap.TUNGraph.Load(FIn)
+
+
+################
+# Plots are cool
+################
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas
+
+
+#eigenvector centrality
+eigencen = []
+NIdEigenH = snap.TIntFltH()
+snap.GetEigenVectorCentr(G, NIdEigenH)
+for item in NIdEigenH:
+    eigencen.append(NIdEigenH[item])
+eigenlist = np.asarray(eigencen)
+fig, ax = plt.subplots()
+ax.set_yscale('log')
+ax.set_xscale('linear’)
+plt.xlabel('Eigenvector Centrality')
+plt.ylabel('Frequency')
+pandas.Series(eigenlist).hist(ax=ax,bins=50,bottom=9*10^(-9))
+print "Eigenvector centrality log-log"
+plt.show()
+fig.savefig('EigenvectorCentralityLogLog.pdf')
+
+ 
+
+NFiedlerVector(const TSparseColMatrix& W, TFltV& fvec, double tol=kDefaultTol, int maxiter=kMaxIter)
